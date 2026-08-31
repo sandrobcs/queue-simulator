@@ -14,15 +14,14 @@ public class Main {
     // Número de servidores na fila
     private static int c = 2;
 
-    // Intervalo de chegada e saida da fila 
+    // Intervalo de chegada e saida da fila
     static int arivalL = 2;
     static int arrivalU = 5;
     static int departureL = 3;
     static int departurU = 5;
-    
 
     public static double rnd(int a, int b) {
-        return a + ((b-a)* RandomNumberGenerator.NextRandom());  
+        return a + ((b - a) * RandomNumberGenerator.NextRandom());
     }
 
     public static Event NextEvent() {
@@ -31,12 +30,12 @@ public class Main {
     }
 
     public static void ARRIVAL(Event event) {
-        times.put(queue , times.get(queue) + event.getTime() - currentTime);
+        times.put(queue, times.get(queue) + event.getTime() - currentTime);
         currentTime = event.getTime();
 
-        if(queue < K) {
+        if (queue < K) {
             queue++;
-            if(queue <= c) {
+            if (queue <= c) {
                 events.add(new Event(currentTime + rnd(departureL, departurU), EventType.DEPARTURE));
             }
         }
@@ -45,15 +44,14 @@ public class Main {
     }
 
     public static void DEPARTURE(Event event) {
-        times.put(queue , times.get(queue) + event.getTime() - currentTime);
+        times.put(queue, times.get(queue) + event.getTime() - currentTime);
         currentTime = event.getTime();
 
-        queue --;
-        if(queue >= c) {
+        queue--;
+        if (queue >= c) {
             events.add(new Event(currentTime + rnd(departureL, departurU), EventType.DEPARTURE));
         }
     }
-
 
     public static void main(String[] args) {
         int count = 100000;
@@ -67,7 +65,7 @@ public class Main {
         while (count > 0) {
             Event event = NextEvent();
 
-            if(event.getType() == EventType.ARRIVAL){
+            if (event.getType() == EventType.ARRIVAL) {
                 ARRIVAL(event);
             } else if (event.getType() == EventType.DEPARTURE) {
                 DEPARTURE(event);
@@ -75,8 +73,13 @@ public class Main {
             count--;
         }
 
-        for(int i=0; i<K+1; i++) {
-            System.out.println(i + ": " + (times.get(i)/currentTime)*100 + "%");
+        System.out.println("\n--- Simulation Results ---");
+        System.out.printf("Total simulated time: %.2f%n", currentTime);
+        System.out.println("Customers | Time (%)");
+
+        for (int i = 0; i < K + 1; i++) {
+            double percentage = (times.get(i) / currentTime) * 100;
+            System.out.printf("%9d | %6.2f%%%n", i, percentage);
         }
     }
 }
