@@ -7,13 +7,18 @@ public class Main {
 
     private static double currentTime = 0;
     private static int queue = 0;
-    private static int K = 2;
+
+    // Tamanho máximo da fila
+    private static int K = 5;
+
+    // Número de servidores na fila
+    private static int c = 2;
 
     // Intervalo de chegada e saida da fila 
     static int arivalL = 2;
-    static int arrivalU = 3;
-    static int departureL = 2;
-    static int departurU = 4;
+    static int arrivalU = 5;
+    static int departureL = 3;
+    static int departurU = 5;
     
 
     public static double rnd(int a, int b) {
@@ -31,7 +36,7 @@ public class Main {
 
         if(queue < K) {
             queue++;
-            if(queue <= 1) {
+            if(queue <= c) {
                 events.add(new Event(currentTime + rnd(departureL, departurU), EventType.DEPARTURE));
             }
         }
@@ -44,7 +49,7 @@ public class Main {
         currentTime = event.getTime();
 
         queue --;
-        if(queue >= 1) {
+        if(queue >= c) {
             events.add(new Event(currentTime + rnd(departureL, departurU), EventType.DEPARTURE));
         }
     }
