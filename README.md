@@ -29,9 +29,8 @@ No packages/build tool yet — flat files, compiled directly.
 ## Run
 
 ```bash
-cd src
-javac *.java
-java Main
+javac -d bin src/*.java
+java -cp bin Main
 ```
 
 ## Output
