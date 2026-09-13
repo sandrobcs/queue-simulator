@@ -21,7 +21,8 @@ Simulates single and tandem queueing systems in Kendall's notation **A/B/c/K** (
 4. **Arrival**: if `queue < K`, the customer is accepted; if a server is available, the next event is scheduled (`PASSAGE` if there are more queues ahead, `DEPARTURE` if it's the last); next arrival is always scheduled; otherwise the customer is lost;
 5. **Passage**: customer leaves an intermediate queue and attempts to enter the next one; if the next queue is full, the customer is lost and counted in that queue's loss;
 6. **Departure**: customer leaves the last queue; if enough customers remain, another `DEPARTURE` is scheduled;
-7. Results are collected per queue as state probabilities and loss counts, output after simulation completes.
+7. The simulation ends when the 100.000th random number is consumed;
+8. Results are collected per queue as accumulated times, state probabilities and loss counts, output after simulation completes.
 
 ## Project structure
 
@@ -71,7 +72,7 @@ simulator.simulate(count, 2.5);
 ```
 
 **Parameters:**
-- **`count`**: Total number of random numbers (events) to process;
+- **`count`**: Total number of random numbers to consume before stopping the simulation;
 - **`timeFirstEvent`**: Time of the first customer arrival (e.g. `2.5`);
 - **`arrival`**: Uniform random interval for inter-arrival times (`null` for queues with no external arrivals);
 - **`departure`**: Uniform random interval for service times;
@@ -94,25 +95,27 @@ java -cp bin Main
 
 ## Output
 
-State probabilities and loss count per queue:
+Accumulated time and state probabilities per queue:
 
 ```
 --- Simulation Results ---
-Total simulated time: 211760.08
+Total simulated time: 100674.71
 
-Queue 1 | Losses: 12
-Customers | Time (%)
-        0 |   0.00%
-        1 |   0.00%
-        2 |   0.01%
-        3 |   0.33%
+Queue 1 | Losses: 386
+Customers |       Time | Time (%)
+        0 |    1127.03 |   1.12%
+        1 |   49676.88 |  49.38%
+        2 |   43456.21 |  43.19%
+        3 |    6341.59 |   6.30%
 
-Queue 2 | Losses: 5
-Customers | Time (%)
-        0 |  12.45%
-        1 |  35.21%
-        2 |  38.10%
-        3 |  14.24%
+Queue 2 | Losses: 0
+Customers |       Time | Time (%)
+        0 |   34085.96 |  33.89%
+        1 |   60279.40 |  59.93%
+        2 |    6207.64 |   6.17%
+        3 |      10.06 |   0.01%
+        4 |       0.00 |   0.00%
+        5 |       0.00 |   0.00%
 ```
 
 ## Course context
