@@ -17,6 +17,10 @@ public class Scheduler {
         return events.poll();
     }
 
+    public int getRandomCount() {
+        return rnd.getCount();
+    }
+
     public void addFirstEvent(double time) {
         events.add(new Event(time, EventType.ARRIVAL, 0));
     }

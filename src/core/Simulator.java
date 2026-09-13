@@ -92,7 +92,7 @@ public class Simulator {
             queue.populateStatusTimes();
         }
 
-        while (count > 0) {
+        while (scheduler.getRandomCount() < count) {
             Event event = scheduler.nextEvent();
 
             if (event.getType() == EventType.ARRIVAL) {
@@ -102,7 +102,6 @@ public class Simulator {
             } else if (event.getType() == EventType.PASSAGE) {
                 PASSAGE(event);
             }
-            count--;
         }
 
         System.out.println("\n--- Simulation Results ---");
