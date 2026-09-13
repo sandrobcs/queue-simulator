@@ -4,7 +4,6 @@ import model.Event;
 import model.Interval;
 
 public class Queue {
-    private double globalTime;
     private int queueStatus;
     private final HashMap<Integer, Double> statusTimes;
     
@@ -18,7 +17,6 @@ public class Queue {
     Interval departureInterval;
 
     public Queue(int c, int K, Interval arrivalInterval, Interval departureInterval) {
-        this.globalTime = 0;
         this.queueStatus = 0;
         this.statusTimes = new HashMap<>();
 
@@ -26,14 +24,6 @@ public class Queue {
         this.K = K;
         this.arrivalInterval = arrivalInterval;
         this.departureInterval = departureInterval;
-    }
-
-    public double getGlobalTime() {
-        return globalTime;
-    }
-
-    public void setGlobalTime(double globalTime) {
-        this.globalTime = globalTime;
     }
 
     public int getStatus() {
@@ -64,9 +54,9 @@ public class Queue {
         return departureInterval;
     }
 
-    public void countTime(Event event) {
+    public double countTime(Event event, Double globalTime) {
         statusTimes.put(queueStatus, statusTimes.get(queueStatus) + event.getTime() - globalTime);
-        globalTime = event.getTime();
+        return event.getTime();
     }
 
     public void populateStatusTimes() {

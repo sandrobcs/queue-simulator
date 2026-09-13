@@ -1,6 +1,5 @@
 package core;
 import java.util.PriorityQueue;
-
 import model.Event;
 import model.EventType;
 import util.RandomNumberGenerator;
@@ -23,11 +22,11 @@ public class Scheduler {
         events.add(new Event(time, EventType.ARRIVAL));
     }
 
-    public void addArrival(Queue queue) {
-        events.add(new Event(queue.getGlobalTime() + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL));
+    public void addArrival(Queue queue, double globalTime) {
+        events.add(new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL));
     }
 
-    public void addDeparture(Queue queue) {
-        events.add(new Event(queue.getGlobalTime() + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE));
+    public void addDeparture(Queue queue, double globalTime) {
+        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE));
     }
 }
