@@ -22,6 +22,9 @@ public class Scheduler {
     }
 
     public void addArrival(Queue queue, double globalTime, int queueIndex) {
+        if (queue.getArrivalInterval() == null) {
+            return;
+        }
         events.add(new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL, queueIndex));
     }
 
