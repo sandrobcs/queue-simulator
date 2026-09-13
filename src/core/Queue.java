@@ -6,22 +6,21 @@ import model.Interval;
 public class Queue {
     private int queueStatus;
     private final HashMap<Integer, Double> statusTimes;
+    private int loss;
     
-    // Servers
-    private final int c;
-
-    // Queue capacity
-    private final int K;
+    private final int servers;
+    private final int capacity;
 
     Interval arrivalInterval;
     Interval departureInterval;
 
-    public Queue(int c, int K, Interval arrivalInterval, Interval departureInterval) {
+    public Queue(int servers, int capacity, Interval arrivalInterval, Interval departureInterval) {
         this.queueStatus = 0;
         this.statusTimes = new HashMap<>();
+        this.loss = 0;
 
-        this.c = c;
-        this.K = K;
+        this.servers = servers;
+        this.capacity = capacity;
         this.arrivalInterval = arrivalInterval;
         this.departureInterval = departureInterval;
     }
@@ -34,16 +33,24 @@ public class Queue {
         this.queueStatus ++;
     }
 
+    public int getLoss() {
+        return loss;
+    }
+
+    public void addLoss() {
+        this.loss ++;
+    }
+
     public void removeStatus() {
         this.queueStatus --;
     }
 
     public int getCapacity() {
-        return K;
+        return capacity;
     }
 
     public int getServers() {
-        return c;
+        return servers;
     }
 
     public Interval getArrivalInterval() {
@@ -59,7 +66,7 @@ public class Queue {
     }
 
     public void populateStatusTimes() {
-        for (int i = 0; i <= K; i++) {
+        for (int i = 0; i <= capacity; i++) {
             statusTimes.put(i, 0.0);
         }
     }

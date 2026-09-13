@@ -30,6 +30,8 @@ public class Simulator {
             if (queue.getStatus() <= queue.getServers()) {
                 scheduler.addDeparture(queue, globalTime);
             }
+        } else {
+            queue.addLoss();
         }
 
         scheduler.addArrival(queue, globalTime);
@@ -62,6 +64,7 @@ public class Simulator {
 
         System.out.println("\n--- Simulation Results ---");
         System.out.printf("Total simulated time: %.2f%n", globalTime);
+        System.out.printf("Losses: %d%n", queue.getLoss());
         System.out.println("Customers | Time (%)");
 
         for (int i = 0, K = queue.getCapacity(); i < K + 1; i++) {
