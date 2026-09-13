@@ -49,28 +49,30 @@ queue-simulator/
 
 ```java
 int count = 100000;
-Interval arrival = new Interval(3, 5);
-Interval departure = new Interval(4, 5);
-Queue queue = new Queue(1, 5, arrival, departure);
+
+Queue queue = new Queue(1, 5, new Interval(3, 5), new Interval(4, 5));
 Scheduler scheduler = new Scheduler();
 
 Simulator simulator = new Simulator(List.of(queue), scheduler);
-simulator.simulate(count);
+simulator.simulate(count, 3.0);
 ```
 
 ### Tandem queues
 
 ```java
 int count = 100000;
-Queue queue1 = new Queue(1, 5, new Interval(3, 5), new Interval(4, 5));
-Queue queue2 = new Queue(2, 3, null, new Interval(3, 4));
+
+Queue queue1 = new Queue(2, 3, new Interval(1, 5), new Interval(4, 5));
+Queue queue2 = new Queue(1, 5, null, new Interval(1, 3));
 Scheduler scheduler = new Scheduler();
 
 Simulator simulator = new Simulator(List.of(queue1, queue2), scheduler);
-simulator.simulate(count);
+simulator.simulate(count, 2.5);
 ```
 
-- **`count`**: Total number of events to process;
+**Parameters:**
+- **`count`**: Total number of random numbers (events) to process;
+- **`timeFirstEvent`**: Time of the first customer arrival (e.g. `2.5`);
 - **`arrival`**: Uniform random interval for inter-arrival times (`null` for queues with no external arrivals);
 - **`departure`**: Uniform random interval for service times;
 - **`servers`** (1st param of Queue): Number of parallel servers (c in Kendall's A/B/c/K);
@@ -104,8 +106,6 @@ Customers | Time (%)
         1 |   0.00%
         2 |   0.01%
         3 |   0.33%
-        4 |  47.93%
-        5 |  51.72%
 
 Queue 2 | Losses: 5
 Customers | Time (%)
