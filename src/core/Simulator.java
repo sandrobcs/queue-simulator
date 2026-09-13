@@ -18,22 +18,24 @@ public class Simulator {
         return globalTime;
     }
 
-    public void setGlobalTime(double globalTime) {
-        this.globalTime = globalTime;
+    private void advanceTime(Event event) {
+        for (Queue q : queues) {
+            q.countTime(event, globalTime);
+        }
+        globalTime = event.getTime();
     }
 
     public void ARRIVAL(Event event) {
         int index = event.getQueueIndex();
         Queue queue = queues.get(index);
 
-        queue.countTime(event, globalTime);
-        globalTime = event.getTime();
+        advanceTime(event);
 
         if (queue.getStatus() < queue.getCapacity()) {
             queue.in();
             if (queue.getStatus() <= queue.getServers()) {
-                if(index == queues.size() - 1) {
-                    scheduler.addDeparture(queues.get(0), globalTime, 0);
+                if (index == queues.size() - 1) {
+                    scheduler.addDeparture(queue, globalTime, index);
                 } else {
                     scheduler.addPassage(queue, globalTime, index);
                 }
@@ -42,15 +44,14 @@ public class Simulator {
             queue.addLoss();
         }
 
-        scheduler.addArrival(queues.get(0), globalTime, index);
+        scheduler.addArrival(queues.get(0), globalTime, 0);
     }
 
     public void DEPARTURE(Event event) {
         int index = event.getQueueIndex();
         Queue queue = queues.get(index);
 
-        queue.countTime(event, globalTime);
-        globalTime = event.getTime();
+        advanceTime(event);
         queue.out();
 
         if (queue.getStatus() >= queue.getServers()) {
@@ -64,9 +65,7 @@ public class Simulator {
         Queue queue = queues.get(index);
         Queue next = queues.get(nextIndex);
 
-        queue.countTime(event, globalTime);
-        next.countTime(event, globalTime);
-        globalTime = event.getTime();
+        advanceTime(event);
 
         queue.out();
         if (queue.getStatus() >= queue.getServers()) {
@@ -87,8 +86,6 @@ public class Simulator {
         }
     }
 
-    
-
     public void simulate(int count, double timeFirstEvent) {
         scheduler.addFirstEvent(timeFirstEvent);
         for (Queue queue : queues) {
@@ -108,7 +105,7 @@ public class Simulator {
             count--;
         }
 
-         System.out.println("\n--- Simulation Results ---");
+        System.out.println("\n--- Simulation Results ---");
         System.out.printf("Total simulated time: %.2f%n", globalTime);
 
         for (int q = 0; q < queues.size(); q++) {
