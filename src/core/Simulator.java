@@ -22,7 +22,8 @@ public class Simulator {
     }
 
     public void ARRIVAL(Event event) {
-        this.globalTime = queue.countTime(event, globalTime);
+        queue.countTime(event, globalTime);
+        globalTime = event.getTime();
 
         if (queue.getStatus() < queue.getCapacity()) {
             queue.addStatus();
@@ -35,9 +36,10 @@ public class Simulator {
     }
 
     public void DEPARTURE(Event event) {
-        this.globalTime = queue.countTime(event, globalTime);
+        queue.countTime(event, globalTime);
+        globalTime = event.getTime();
         queue.removeStatus();
-    
+
         if (queue.getStatus() >= queue.getServers()) {
             scheduler.addDeparture(queue, globalTime);
         }

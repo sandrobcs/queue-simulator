@@ -54,9 +54,8 @@ public class Queue {
         return departureInterval;
     }
 
-    public double countTime(Event event, Double globalTime) {
+    public void countTime(Event event, Double globalTime) {
         statusTimes.put(queueStatus, statusTimes.get(queueStatus) + event.getTime() - globalTime);
-        return event.getTime();
     }
 
     public void populateStatusTimes() {
