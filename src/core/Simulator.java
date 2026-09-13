@@ -110,11 +110,11 @@ public class Simulator {
         for (int q = 0; q < queues.size(); q++) {
             Queue queue = queues.get(q);
             System.out.printf("%nQueue %d | Losses: %d%n", q + 1, queue.getLoss());
-            System.out.println("Customers | Time (%)");
-
+            System.out.println("Customers |       Time | Time (%)");
             for (int i = 0; i <= queue.getCapacity(); i++) {
-                double percentage = (queue.getStatusTime(i) / globalTime) * 100;
-                System.out.printf("%9d | %6.2f%%%n", i, percentage);
+                double time = queue.getStatusTime(i);
+                double percentage = (time / globalTime) * 100;
+                System.out.printf("%9d | %10.2f | %6.2f%%%n", i, time, percentage);
             }
         }
     }
