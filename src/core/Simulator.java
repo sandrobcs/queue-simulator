@@ -3,14 +3,14 @@ import model.Event;
 import model.EventType;
 
 public class Simulator {
-    private static double globalTime;
-    static Scheduler scheduler;
-    static Queue queue;
+    private double globalTime;
+    private Scheduler scheduler;
+    private Queue queue;
 
     public Simulator(Queue queue, Scheduler scheduler) {
-        Simulator.globalTime = 0;
-        Simulator.queue = queue;
-        Simulator.scheduler = scheduler;
+        this.globalTime = 0;
+        this.queue = queue;
+        this.scheduler = scheduler;
     }
 
     public double getGlobalTime() {
@@ -18,11 +18,11 @@ public class Simulator {
     }
 
     public void setGlobalTime(double globalTime) {
-        Simulator.globalTime = globalTime;
+        this.globalTime = globalTime;
     }
 
-    public static void ARRIVAL(Event event) {
-        Simulator.globalTime = queue.countTime(event, globalTime);
+    public void ARRIVAL(Event event) {
+        this.globalTime = queue.countTime(event, globalTime);
 
         if (queue.getStatus() < queue.getCapacity()) {
             queue.addStatus();
@@ -34,8 +34,8 @@ public class Simulator {
         scheduler.addArrival(queue, globalTime);
     }
 
-    public static void DEPARTURE(Event event) {
-        Simulator.globalTime = queue.countTime(event, globalTime);
+    public void DEPARTURE(Event event) {
+        this.globalTime = queue.countTime(event, globalTime);
         queue.removeStatus();
     
         if (queue.getStatus() >= queue.getServers()) {

@@ -5,12 +5,12 @@ import model.EventType;
 import util.RandomNumberGenerator;
 
 public class Scheduler {
-    private static PriorityQueue<Event> events;
-    private static RandomNumberGenerator rnd;
+    private PriorityQueue<Event> events;
+    private RandomNumberGenerator rnd;
 
     public Scheduler() {
-        Scheduler.events = new PriorityQueue<>();
-        Scheduler.rnd = new RandomNumberGenerator();
+        this.events = new PriorityQueue<>();
+        this.rnd = new RandomNumberGenerator();
     }
 
     public Event nextEvent() {
