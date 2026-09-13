@@ -4,8 +4,8 @@ import model.EventType;
 
 public class Simulator {
     private double globalTime;
-    private Scheduler scheduler;
-    private Queue queue;
+    private final Scheduler scheduler;
+    private final Queue queue;
 
     public Simulator(Queue queue, Scheduler scheduler) {
         this.globalTime = 0;

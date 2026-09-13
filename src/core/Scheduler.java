@@ -5,8 +5,8 @@ import model.EventType;
 import util.RandomNumberGenerator;
 
 public class Scheduler {
-    private PriorityQueue<Event> events;
-    private RandomNumberGenerator rnd;
+    private final PriorityQueue<Event> events;
+    private final RandomNumberGenerator rnd;
 
     public Scheduler() {
         this.events = new PriorityQueue<>();
