@@ -14,6 +14,6 @@ public class Main {
         Scheduler scheduler = new Scheduler();
 
         Simulator simulator = new Simulator(List.of(queue), scheduler);
-        simulator.simulate(count);
+        simulator.simulate(count, 3);
     }
 }

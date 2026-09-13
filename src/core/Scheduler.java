@@ -17,7 +17,7 @@ public class Scheduler {
         return events.poll();
     }
 
-    public void addFirstEvent(int time) {
+    public void addFirstEvent(double time) {
         events.add(new Event(time, EventType.ARRIVAL, 0));
     }
 

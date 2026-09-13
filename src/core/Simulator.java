@@ -89,8 +89,8 @@ public class Simulator {
 
     
 
-    public void simulate(int count) {
-        scheduler.addFirstEvent(3);
+    public void simulate(int count, double timeFirstEvent) {
+        scheduler.addFirstEvent(timeFirstEvent);
         for (Queue queue : queues) {
             queue.populateStatusTimes();
         }
