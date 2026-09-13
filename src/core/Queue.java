@@ -29,8 +29,12 @@ public class Queue {
         return queueStatus;
     }
 
-    public void addStatus() {
+    public void in() {
         this.queueStatus ++;
+    }
+
+    public void out() {
+        this.queueStatus --;
     }
 
     public int getLoss() {
@@ -39,10 +43,6 @@ public class Queue {
 
     public void addLoss() {
         this.loss ++;
-    }
-
-    public void removeStatus() {
-        this.queueStatus --;
     }
 
     public int getCapacity() {

@@ -1,6 +1,7 @@
 import core.Queue;
 import core.Scheduler;
 import core.Simulator;
+import java.util.List;
 import model.Interval;
 
 public class Main {
@@ -12,8 +13,7 @@ public class Main {
         Queue queue = new Queue(1, 5, arrival, departure);
         Scheduler scheduler = new Scheduler();
 
-        Simulator simulator = new Simulator(queue, scheduler);
+        Simulator simulator = new Simulator(List.of(queue), scheduler);
         simulator.simulate(count);
-        
     }
 }

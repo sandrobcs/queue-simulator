@@ -14,19 +14,22 @@ public class Scheduler {
     }
 
     public Event nextEvent() {
-        Event event = events.poll();
-        return event;
+        return events.poll();
     }
 
     public void addFirstEvent(int time) {
-        events.add(new Event(time, EventType.ARRIVAL));
+        events.add(new Event(time, EventType.ARRIVAL, 0));
     }
 
-    public void addArrival(Queue queue, double globalTime) {
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL));
+    public void addArrival(Queue queue, double globalTime, int queueIndex) {
+        events.add(new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL, queueIndex));
     }
 
-    public void addDeparture(Queue queue, double globalTime) {
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE));
+    public void addPassage(Queue queue, double globalTime, int queueIndex) {
+        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.PASSAGE, queueIndex));
+    }
+
+    public void addDeparture(Queue queue, double globalTime, int queueIndex) {
+        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE, queueIndex));
     }
 }
