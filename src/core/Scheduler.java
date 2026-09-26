@@ -1,4 +1,5 @@
 package core;
+
 import java.util.PriorityQueue;
 import model.Event;
 import model.EventType;
@@ -17,6 +18,10 @@ public class Scheduler {
         return events.poll();
     }
 
+    public double nextRandom() {
+        return rnd.nextRandom();
+    }
+
     public int getRandomCount() {
         return rnd.getCount();
     }
@@ -29,14 +34,17 @@ public class Scheduler {
         if (queue.getArrivalInterval() == null) {
             return;
         }
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL, queueIndex));
+        events.add(
+                new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL, queueIndex));
     }
 
     public void addPassage(Queue queue, double globalTime, int queueIndex) {
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.PASSAGE, queueIndex));
+        events.add(
+                new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.PASSAGE, queueIndex));
     }
 
     public void addDeparture(Queue queue, double globalTime, int queueIndex) {
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE, queueIndex));
+        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE,
+                queueIndex));
     }
 }
