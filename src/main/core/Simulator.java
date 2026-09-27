@@ -21,7 +21,7 @@ public class Simulator {
     }
 
     private void advanceTime(Event event) {
-        // Todos os estados permanecem ativos ate o instante do evento.
+        // Records the current state time before processing the event.
         for (Queue queue : queues) {
             queue.countTime(event, globalTime);
         }
@@ -29,7 +29,6 @@ public class Simulator {
     }
 
     private void scheduleService(Queue queue, int queueIndex) {
-        // O tipo do atendimento depende de a fila ser intermediaria ou final.
         if (queueIndex == queues.size() - 1) {
             scheduler.addDeparture(queue, globalTime, queueIndex);
         } else {
@@ -42,7 +41,6 @@ public class Simulator {
             return;
         }
 
-        // O roteamento acontece somente depois que o atendimento termina.
         int nextIndex = current.nextQueue(scheduler.nextRandom());
         if (nextIndex == -1) {
             return;
@@ -54,6 +52,7 @@ public class Simulator {
             return;
         }
 
+        // The customer joins the queue and starts service only if a server is available.
         next.in();
         if (next.getStatus() <= next.getServers()) {
             scheduleService(next, nextIndex);
@@ -64,7 +63,6 @@ public class Simulator {
         int index = event.getQueueIndex();
         Queue queue = queues.get(index);
 
-        // A chegada externa entra na fila, mas nao e roteada.
         advanceTime(event);
         if (queue.getStatus() < queue.getCapacity()) {
             queue.in();
@@ -75,7 +73,6 @@ public class Simulator {
             queue.addLoss();
         }
 
-        // Somente a fila 0 possui chegadas externas; Scheduler ignora null.
         scheduler.addArrival(queues.get(0), globalTime, 0);
     }
 
@@ -83,16 +80,13 @@ public class Simulator {
         int index = event.getQueueIndex();
         Queue queue = queues.get(index);
 
-        // O atendimento terminou: primeiro atualiza o tempo e remove o cliente.
         advanceTime(event);
         queue.out();
 
-        // Um cliente que espera pode iniciar o proximo atendimento nesta fila.
         if (queue.getStatus() >= queue.getServers()) {
             scheduleService(queue, index);
         }
 
-        // Somente agora o cliente atendido e roteado para a proxima fila.
         scheduleNext(queue, index);
     }
 
@@ -100,16 +94,13 @@ public class Simulator {
         int index = event.getQueueIndex();
         Queue queue = queues.get(index);
 
-        // O atendimento terminou: primeiro atualiza o tempo e remove o cliente.
         advanceTime(event);
         queue.out();
 
-        // Agenda o atendimento do proximo cliente, se houver um aguardando.
         if (queue.getStatus() >= queue.getServers()) {
             scheduler.addDeparture(queue, globalTime, index);
         }
 
-        // O cliente atendido pode seguir para outra fila ou sair do sistema.
         scheduleNext(queue, index);
     }
 
@@ -122,6 +113,7 @@ public class Simulator {
         while (scheduler.getRandomCount() < count) {
             Event event = scheduler.nextEvent();
 
+            // The priority queue always returns the next event in time.
             switch (event.getType()) {
                 case ARRIVAL -> ARRIVAL(event);
                 case PASSAGE -> PASSAGE(event);
@@ -137,7 +129,6 @@ public class Simulator {
             System.out.printf("%nQueue %d | Losses: %d%n", index + 1, queue.getLoss());
             System.out.println("Customers |       Time | Time (%)");
 
-            // entrySet tambem cobre filas infinitas, cujos estados sao descobertos em runtime.
             queue.getStatusTimes().entrySet().stream()
                     .sorted(Map.Entry.comparingByKey())
                     .forEach(entry -> {

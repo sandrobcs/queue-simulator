@@ -40,6 +40,7 @@ public class Scheduler {
     }
 
     public void addPassage(Queue queue, double globalTime, int queueIndex) {
+        // Moves the customer to another queue after service.
         events.add(
                 new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.PASSAGE, queueIndex));
     }

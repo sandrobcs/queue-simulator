@@ -1,0 +1,36 @@
+simulation:
+  count: 100000
+  firstArrival: 2.0
+
+queues:
+  - name: Q1
+    servers: 1
+    arrivalInterval: [2.0, 4.0]
+    serviceInterval: [1.0, 2.0]
+
+  - name: Q2
+    servers: 2
+    capacity: 5
+    serviceInterval: [4.0, 6.0]
+
+  - name: Q3
+    servers: 2
+    capacity: 10
+    serviceInterval: [5.0, 15.0]
+
+routing:
+  - from: Q1
+    to: Q2
+    probability: 0.2
+  - from: Q1
+    to: Q3
+    probability: 0.8
+  - from: Q2
+    to: Q1
+    probability: 0.3
+  - from: Q2
+    to: Q2
+    probability: 0.5
+  - from: Q3
+    to: Q3
+    probability: 0.7

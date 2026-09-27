@@ -1,18 +1,19 @@
 package main.model;
-public class Interval {
-    private final int lower;
-    private final int upper;
 
-    public Interval(int lower, int upper) {
+public class Interval {
+    private final double lower;
+    private final double upper;
+
+    public Interval(double lower, double upper) {
         this.lower = lower;
         this.upper = upper;
     }
 
-    public int getLower() {
+    public double getLower() {
         return lower;
     }
 
-    public int getUpper() {
+    public double getUpper() {
         return upper;
     }
 }

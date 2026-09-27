@@ -1,4 +1,5 @@
 package main.util;
+
 import main.model.Interval;
 
 public class RandomNumberGenerator {
@@ -9,6 +10,7 @@ public class RandomNumberGenerator {
     private int count;
 
     public double nextRandom() {
+        // Deterministic linear congruential generator for the simulation.
         previous = ((A * previous) + C) % M;
         count++;
         return (double) previous / M;

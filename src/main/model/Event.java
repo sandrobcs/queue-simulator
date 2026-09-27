@@ -1,4 +1,5 @@
 package main.model;
+
 public class Event implements Comparable<Event> {
     private double time;
     private EventType type;

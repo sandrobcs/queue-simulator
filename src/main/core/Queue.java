@@ -32,6 +32,8 @@ public class Queue {
 
     public int nextQueue(double rnd) {
         double sum = 0.0;
+
+        // Selects the next queue using cumulative probabilities.
         for (int i = 0; i < routing.length; i++) {
             sum += routing[i];
             if (rnd < sum)
@@ -81,6 +83,7 @@ public class Queue {
     }
 
     public void populateStatusTimes() {
+        // Ensures that states with no occurrences also appear in the report.
         if (capacity == INFINITE)
             return;
         for (int i = 0; i <= capacity; i++) {
