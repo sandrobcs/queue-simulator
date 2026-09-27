@@ -1,3 +1,29 @@
+# ==============================================================================
+# Queue Simulator - Configuration File
+# ==============================================================================
+#
+# simulation:
+#   count        - total number of random numbers to consume before stopping
+#   firstArrival - time of the first customer arrival
+#
+# queues: list of queues in the network (order defines the index of each queue)
+#   name            - queue identifier, used in routing
+#   servers         - number of parallel servers (c in Kendall's A/B/c/K)
+#   capacity        - max customers in the system (omit for infinite capacity)
+#   arrivalInterval - [min, max] for external arrival times (omit for internal queues)
+#   serviceInterval - [min, max] for service times
+#
+# routing: probabilistic routing between queues after service
+#   from        - source queue name
+#   to          - destination queue name
+#   probability - probability of routing from source to destination
+#
+# Note: probabilities from the same source do not need to sum to 1.0.
+#       The remainder is implicitly routed out of the system (exterior).
+#       Example: if Q1 routes 0.2 to Q2 and 0.8 to Q3, no customer leaves externally.
+#                if Q2 routes 0.3 to Q1 and 0.5 to Q2, 20% leaves the system.
+# ==============================================================================
+
 simulation:
   count: 100000
   firstArrival: 2.0
