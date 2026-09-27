@@ -1,121 +1,165 @@
 # Queue Simulator
 
-Discrete-event queue simulator built for the **Simulation and Analytical Methods** course, Software Engineering @ PUCRS.
+Discrete-event queue simulator built for the **Simulation and Analytical Methods** course in the Software Engineering program at PUCRS.
 
-Simulates single and tandem queueing systems in Kendall's notation **A/B/c/K** (arrival distribution / service distribution / number of servers / system capacity).
+The simulator models queueing networks with probabilistic routing between queues. Each queue can have its own number of servers, capacity, arrival interval, and service interval. A queue without a configured capacity has infinite capacity.
 
-## How it works
+## Components
 
-**Core components:**
-- `Simulator`: main simulation engine that orchestrates the event-driven simulation process;
-- `Scheduler`: manages event scheduling and retrieval from the priority queue;
-- `Queue`: handles customer queue management, state tracking and loss counting;
-- `Event` & `EventType`: represent discrete events (`ARRIVAL`, `PASSAGE`, `DEPARTURE`);
-- `RandomNumberGenerator`: Linear Congruential Generator (`Xₙ₊₁ = (a·Xₙ + c) mod M`) for reproducible random sequences;
-- `Interval`: data structure for representing arrival/service intervals.
+- `Main`: application entry point; receives the YAML configuration file as an argument.
+- `Config`: reads the YAML file and builds the simulation parameters, queues, and routing table.
+- `Simulator`: processes events, advances simulation time, and collects queue statistics.
+- `Scheduler`: stores events in chronological order and provides pseudo-random values.
+- `Queue`: tracks customers, capacity, losses, and the time spent in each state.
+- `Event` and `EventType`: represent events and their types (`ARRIVAL`, `PASSAGE`, and `DEPARTURE`).
+- `Interval`: represents the lower and upper bounds of an arrival or service interval.
+- `RandomNumberGenerator`: deterministic linear congruential generator used by the simulation.
 
-**Simulation flow:**
-1. `Main.java` initializes the `Simulator` with a list of queues and a `Scheduler`;
-2. Events (`ARRIVAL`, `PASSAGE`, `DEPARTURE`) are processed in chronological order via the `Scheduler`'s priority queue;
-3. Time spent in each system state (0..K customers) is accumulated per queue, weighted by elapsed time;
-4. **Arrival**: if `queue < K`, the customer is accepted; if a server is available, the next event is scheduled (`PASSAGE` if there are more queues ahead, `DEPARTURE` if it's the last); next arrival is always scheduled; otherwise the customer is lost;
-5. **Passage**: customer leaves an intermediate queue and attempts to enter the next one; if the next queue is full, the customer is lost and counted in that queue's loss;
-6. **Departure**: customer leaves the last queue; if enough customers remain, another `DEPARTURE` is scheduled;
-7. The simulation ends when the 100.000th random number is consumed;
-8. Results are collected per queue as accumulated times, state probabilities and loss counts, output after simulation completes.
+## Simulation flow
+
+1. `Main` loads the YAML file through `Config` and creates the simulator.
+2. The first `ARRIVAL` event is scheduled for the configured `firstArrival` time.
+3. Events are retrieved chronologically from the scheduler's priority queue.
+4. On `ARRIVAL`, the customer enters the external-arrival queue if there is capacity. A service event is scheduled when a server is available, and the next external arrival is added.
+5. On `PASSAGE`, the customer leaves an intermediate queue and is routed probabilistically to another queue. If the destination is full, the loss is counted there.
+6. On `DEPARTURE`, the customer leaves the final queue. Remaining customers can start another service, and the completed customer can be routed according to the queue's probabilities.
+7. The simulation stops when the configured number of random values has been consumed (`count`), and prints accumulated state times and losses for every queue.
+
+Probabilities in a queue's routing table do not need to sum to `1.0`. Any remaining probability represents a customer leaving the system.
 
 ## Project structure
 
-```
+```text
 queue-simulator/
-├── bin/                             # compiled class files
+├── model.yml                         # Example YAML configuration
+├── pom.xml                           # Maven build and dependency configuration
 ├── src/
-│   ├── Main.java                    # entry point, simulation parameters
-│   ├── core/
-│   │   ├── Queue.java               # queue management, state tracking, loss counting
-│   │   ├── Scheduler.java           # event scheduling (priority queue)
-│   │   └── Simulator.java           # main simulation engine
-│   ├── model/
-│   │   ├── Event.java               # event class (time + type + queueIndex), Comparable
-│   │   ├── EventType.java           # enum: ARRIVAL, PASSAGE, DEPARTURE
-│   │   └── Interval.java            # interval distribution representation
-│   └── util/
-│       └── RandomNumberGenerator.java # LCG-based RNG
+│   └── main/                         # Source root configured in pom.xml
+│       ├── Main.java                 # Application entry point
+│       ├── core/
+│       │   ├── Queue.java            # Queue state and loss tracking
+│       │   ├── Scheduler.java        # Event priority queue and random values
+│       │   └── Simulator.java         # Main simulation engine
+│       ├── model/
+│       │   ├── Event.java            # Event time, type, and queue index
+│       │   ├── EventType.java        # ARRIVAL, PASSAGE, DEPARTURE
+│       │   └── Interval.java         # Interval representation
+│       └── util/
+│           ├── Config.java           # YAML configuration loader
+│           └── RandomNumberGenerator.java # Deterministic random number generator
 └── README.md
 ```
 
+The compiled classes and shaded JAR are generated in `target/` by Maven. The `bin/` directory is no longer used.
+
 ## Configuration
 
-### Single queue
+The simulator accepts a YAML file with the `simulation`, `queues`, and `routing` sections. The example below is the content of `model.yml`:
 
-```java
-int count = 100000;
+```yaml
+simulation:
+  count: 100000
+  firstArrival: 2.0
 
-Queue queue = new Queue(1, 5, new Interval(3, 5), new Interval(4, 5));
-Scheduler scheduler = new Scheduler();
+queues:
+  - name: Q1
+    servers: 1
+    arrivalInterval: [2.0, 4.0]
+    serviceInterval: [1.0, 2.0]
 
-Simulator simulator = new Simulator(List.of(queue), scheduler);
-simulator.simulate(count, 3.0);
+  - name: Q2
+    servers: 2
+    capacity: 5
+    serviceInterval: [4.0, 6.0]
+
+  - name: Q3
+    servers: 2
+    capacity: 10
+    serviceInterval: [5.0, 15.0]
+
+routing:
+  - from: Q1
+    to: Q2
+    probability: 0.2
+  - from: Q1
+    to: Q3
+    probability: 0.8
+  - from: Q2
+    to: Q1
+    probability: 0.3
+  - from: Q2
+    to: Q2
+    probability: 0.5
+  - from: Q3
+    to: Q3
+    probability: 0.7
 ```
 
-### Tandem queues
+Configuration fields:
 
-```java
-int count = 100000;
+- `simulation.count`: number of random values to consume before stopping.
+- `simulation.firstArrival`: time of the first external arrival.
+- `queues[].name`: queue identifier used by the routing entries.
+- `queues[].servers`: number of parallel servers.
+- `queues[].capacity`: maximum number of customers; omit it for infinite capacity.
+- `queues[].arrivalInterval`: lower and upper bounds for external arrivals; omit it for internal queues.
+- `queues[].serviceInterval`: lower and upper bounds for service times.
+- `routing[].from`: source queue name.
+- `routing[].to`: destination queue name.
+- `routing[].probability`: routing probability from the source to the destination.
 
-Queue queue1 = new Queue(2, 3, new Interval(1, 5), new Interval(4, 5));
-Queue queue2 = new Queue(1, 5, null, new Interval(1, 3));
-Scheduler scheduler = new Scheduler();
+## Build and run
 
-Simulator simulator = new Simulator(List.of(queue1, queue2), scheduler);
-simulator.simulate(count, 2.5);
-```
+Build the executable JAR with Maven:
 
-**Parameters:**
-- **`count`**: Total number of random numbers to consume before stopping the simulation;
-- **`timeFirstEvent`**: Time of the first customer arrival (e.g. `2.5`);
-- **`arrival`**: Uniform random interval for inter-arrival times (`null` for queues with no external arrivals);
-- **`departure`**: Uniform random interval for service times;
-- **`servers`** (1st param of Queue): Number of parallel servers (c in Kendall's A/B/c/K);
-- **`capacity`** (2nd param of Queue): System capacity (K in Kendall's A/B/c/K).
-
-## Build and Run
-
-**Compile:**
 ```bash
-javac -d bin src/Main.java src/core/*.java src/model/*.java src/util/*.java
+mvn package
 ```
 
-**Run:**
+Run the simulator with the example configuration:
+
 ```bash
-java -cp bin Main
+java -jar target/queue-simulator-1.0.0.jar model.yml
 ```
 
-**Note:** Classes in `core/`, `model/`, and `util/` packages must have proper `package` declarations (e.g., `package core;`, `package model;`, `package util;`). `Main.java` is in the default package.
+## Example output
 
-## Output
+The following is the output produced with the three-queue configuration above:
 
-Accumulated time and state probabilities per queue:
-
-```
+```text
 --- Simulation Results ---
-Total simulated time: 100674.71
+Total simulated time: 55754.18
 
-Queue 1 | Losses: 386
+Queue 1 | Losses: 0
 Customers |       Time | Time (%)
-        0 |    1127.03 |   1.12%
-        1 |   49676.88 |  49.38%
-        2 |   43456.21 |  43.19%
-        3 |    6341.59 |   6.30%
+        0 |   24055.83 |  43.15%
+        1 |   28878.05 |  51.80%
+        2 |    2736.28 |   4.91%
+        3 |      83.96 |   0.15%
+        4 |       0.07 |   0.00%
 
-Queue 2 | Losses: 0
+Queue 2 | Losses: 6
 Customers |       Time | Time (%)
-        0 |   34085.96 |  33.89%
-        1 |   60279.40 |  59.93%
-        2 |    6207.64 |   6.17%
-        3 |      10.06 |   0.01%
-        4 |       0.00 |   0.00%
-        5 |       0.00 |   0.00%
+        0 |   24216.60 |  43.43%
+        1 |   21151.85 |  37.94%
+        2 |    7915.15 |  14.20%
+        3 |    1863.28 |   3.34%
+        4 |     505.84 |   0.91%
+        5 |     101.46 |   0.18%
+
+Queue 3 | Losses: 13504
+Customers |       Time | Time (%)
+        0 |       5.34 |   0.01%
+        1 |       3.93 |   0.01%
+        2 |       3.70 |   0.01%
+        3 |       2.88 |   0.01%
+        4 |       4.40 |   0.01%
+        5 |       7.82 |   0.01%
+        6 |       5.62 |   0.01%
+        7 |       7.95 |   0.01%
+        8 |     482.27 |   0.86%
+        9 |    6959.11 |  12.48%
+       10 |   48271.16 |  86.58%
 ```
 
 ## Course context
@@ -123,5 +167,3 @@ Customers |       Time | Time (%)
 **Course:** Simulation and Analytical Methods  
 **Program:** Software Engineering  
 **Institution:** PUCRS (Pontifícia Universidade Católica do Rio Grande do Sul)
-
-This project implements a discrete-event simulation to model and analyze single and tandem queueing systems, comparing simulated results with analytical solutions from queueing theory.

@@ -1,8 +1,10 @@
-package core;
+package main.core;
+
 import java.util.PriorityQueue;
-import model.Event;
-import model.EventType;
-import util.RandomNumberGenerator;
+
+import main.model.Event;
+import main.model.EventType;
+import main.util.RandomNumberGenerator;
 
 public class Scheduler {
     private final PriorityQueue<Event> events;
@@ -17,6 +19,10 @@ public class Scheduler {
         return events.poll();
     }
 
+    public double nextRandom() {
+        return rnd.nextRandom();
+    }
+
     public int getRandomCount() {
         return rnd.getCount();
     }
@@ -29,14 +35,18 @@ public class Scheduler {
         if (queue.getArrivalInterval() == null) {
             return;
         }
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL, queueIndex));
+        events.add(
+                new Event(globalTime + rnd.randomInRange(queue.getArrivalInterval()), EventType.ARRIVAL, queueIndex));
     }
 
     public void addPassage(Queue queue, double globalTime, int queueIndex) {
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.PASSAGE, queueIndex));
+        // Moves the customer to another queue after service.
+        events.add(
+                new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.PASSAGE, queueIndex));
     }
 
     public void addDeparture(Queue queue, double globalTime, int queueIndex) {
-        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE, queueIndex));
+        events.add(new Event(globalTime + rnd.randomInRange(queue.getDepartureInterval()), EventType.DEPARTURE,
+                queueIndex));
     }
 }
