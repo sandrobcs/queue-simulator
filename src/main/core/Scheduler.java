@@ -1,9 +1,10 @@
-package core;
+package main.core;
 
 import java.util.PriorityQueue;
-import model.Event;
-import model.EventType;
-import util.RandomNumberGenerator;
+
+import main.model.Event;
+import main.model.EventType;
+import main.util.RandomNumberGenerator;
 
 public class Scheduler {
     private final PriorityQueue<Event> events;

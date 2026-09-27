@@ -1,8 +1,9 @@
-package core;
+package main.core;
 
 import java.util.List;
 import java.util.Map;
-import model.Event;
+
+import main.model.Event;
 
 public class Simulator {
     private double globalTime;

@@ -1,8 +1,9 @@
-import core.Queue;
-import core.Scheduler;
-import core.Simulator;
+package main;
 import java.util.List;
-import model.Interval;
+import main.core.Queue;
+import main.core.Scheduler;
+import main.core.Simulator;
+import main.model.Interval;
 
 public class Main {
     public static void main(String[] args) {

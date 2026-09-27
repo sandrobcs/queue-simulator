@@ -1,8 +1,9 @@
-package core;
+package main.core;
 
 import java.util.HashMap;
-import model.Event;
-import model.Interval;
+
+import main.model.Event;
+import main.model.Interval;
 
 public class Queue {
     public static final int INFINITE = Integer.MAX_VALUE;

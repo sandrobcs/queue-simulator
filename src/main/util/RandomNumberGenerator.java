@@ -1,5 +1,5 @@
-package util;
-import model.Interval;
+package main.util;
+import main.model.Interval;
 
 public class RandomNumberGenerator {
     private final long A = 2493;
