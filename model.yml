@@ -55,8 +55,8 @@ routing:
     to: Q1
     probability: 0.3
   - from: Q2
-    to: Q2
+    to: Q3
     probability: 0.5
   - from: Q3
-    to: Q3
+    to: Q2
     probability: 0.7

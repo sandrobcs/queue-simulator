@@ -39,7 +39,7 @@ queue-simulator/
 │       ├── core/
 │       │   ├── Queue.java            # Queue state and loss tracking
 │       │   ├── Scheduler.java        # Event priority queue and random values
-│       │   └── Simulator.java         # Main simulation engine
+│       │   └── Simulator.java        # Main simulation engine
 │       ├── model/
 │       │   ├── Event.java            # Event time, type, and queue index
 │       │   ├── EventType.java        # ARRIVAL, PASSAGE, DEPARTURE
@@ -88,10 +88,10 @@ routing:
     to: Q1
     probability: 0.3
   - from: Q2
-    to: Q2
+    to: Q3
     probability: 0.5
   - from: Q3
-    to: Q3
+    to: Q2
     probability: 0.7
 ```
 
@@ -128,38 +128,37 @@ The following is the output produced with the three-queue configuration above:
 
 ```text
 --- Simulation Results ---
-Total simulated time: 55754.18
+Total simulated time: 50660.27
 
 Queue 1 | Losses: 0
 Customers |       Time | Time (%)
-        0 |   24055.83 |  43.15%
-        1 |   28878.05 |  51.80%
-        2 |    2736.28 |   4.91%
-        3 |      83.96 |   0.15%
-        4 |       0.07 |   0.00%
+        0 |   20222.99 |  39.92%
+        1 |   26713.78 |  52.73%
+        2 |    3604.09 |   7.11%
+        3 |     119.41 |   0.24%
 
-Queue 2 | Losses: 6
+Queue 2 | Losses: 10
 Customers |       Time | Time (%)
-        0 |   24216.60 |  43.43%
-        1 |   21151.85 |  37.94%
-        2 |    7915.15 |  14.20%
-        3 |    1863.28 |   3.34%
-        4 |     505.84 |   0.91%
-        5 |     101.46 |   0.18%
+        0 |   12372.21 |  24.42%
+        1 |   20818.38 |  41.09%
+        2 |   12966.66 |  25.60%
+        3 |    3762.17 |   7.43%
+        4 |     653.00 |   1.29%
+        5 |      87.85 |   0.17%
 
-Queue 3 | Losses: 13504
+Queue 3 | Losses: 11570
 Customers |       Time | Time (%)
         0 |       5.34 |   0.01%
-        1 |       3.93 |   0.01%
-        2 |       3.70 |   0.01%
-        3 |       2.88 |   0.01%
-        4 |       4.40 |   0.01%
-        5 |       7.82 |   0.01%
-        6 |       5.62 |   0.01%
-        7 |       7.95 |   0.01%
-        8 |     482.27 |   0.86%
-        9 |    6959.11 |  12.48%
-       10 |   48271.16 |  86.58%
+        1 |       2.64 |   0.01%
+        2 |       2.86 |   0.01%
+        3 |       6.52 |   0.01%
+        4 |       2.77 |   0.01%
+        5 |       3.34 |   0.01%
+        6 |       8.14 |   0.02%
+        7 |      52.27 |   0.10%
+        8 |    2973.38 |   5.87%
+        9 |   15940.02 |  31.46%
+       10 |   31663.00 |  62.50%
 ```
 
 ## Course context
